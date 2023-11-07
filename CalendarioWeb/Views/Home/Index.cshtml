@@ -1,1 +1,17 @@
-﻿
+﻿@model Calendario
+
+<div>
+    <div class="calendario">
+        @for(int i=0; i<6; i++)
+        {
+            <div>
+
+            @for(int j=0; j<7; j++)
+            {
+                <span style="margin-right: 2px">@Model.Dias[i,j]</span>
+            }
+            </div>
+        }
+        <span>@DateTime.UtcNow</span>
+    </div>
+</div>

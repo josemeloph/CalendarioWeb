@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,13 +21,12 @@ namespace CalendarioWeb.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            Calendario calendario = new Calendario() { Ano = DateTime.Now.Year, Mes = DateTime.Now.Month };
+            int[,] dias = calendario.GerarCalendario();
+            calendario.Dias = dias;
+            return View(calendario);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
