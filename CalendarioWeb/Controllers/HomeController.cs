@@ -21,7 +21,8 @@ namespace CalendarioWeb.Controllers
 
         public IActionResult Index()
         {
-            Calendario calendario = new Calendario() { Ano = DateTime.Now.Year, Mes = DateTime.Now.Month };
+            CultureInfo culture = CultureInfo.CurrentCulture;
+            Calendario calendario = new Calendario() { Dia = DateTime.Now.Day, Ano = DateTime.Now.Year, Mes = DateTime.Now.Month };
             int[,] dias = calendario.GerarCalendario();
             calendario.Dias = dias;
             return View(calendario);

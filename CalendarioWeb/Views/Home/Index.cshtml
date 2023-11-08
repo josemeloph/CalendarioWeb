@@ -1,17 +1,71 @@
 ﻿@model Calendario
 
 <div>
-    <div class="calendario">
-        @for(int i=0; i<6; i++)
-        {
-            <div>
-
-            @for(int j=0; j<7; j++)
-            {
-                <span style="margin-right: 2px">@Model.Dias[i,j]</span>
-            }
+    <div class="container">
+        <div>
+            <div class="top">
+                <div class="data">
+                    <div>
+                        <span class="semana" style="display: block">sáb</span>
+                        <span class="dia">28</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="mes">Outubro 2023</span>
+                    <span class="ano">Dia do Servidor Público</span>
+                </div>
             </div>
-        }
-        <span>@DateTime.UtcNow</span>
+            <div class="dias-semana">
+                <div>
+                    <span>Dom</span>
+                </div>
+                <div>
+                    <span>Seg</span>
+                </div>
+                <div>
+                    <span>Ter</span>
+                </div>
+                <div>
+                    <span>Qua</span>
+                </div>
+                <div>
+                    <span>Qui</span>
+                </div>
+                <div>
+                    <span>Sex</span>
+                </div>
+                <div>
+                    <span>Sáb</span>
+                </div>
+            </div>
+            <div class="calendario">
+                @for (int i = 0; i < 6; i++)
+                {
+                    <div class="semana">
+                        @for (int j = 0; j < 7; j++)
+                        {
+                            if (i ==0 && j < Model.Inicio_Fim[0])
+                            {
+                                <div class="dia">
+                                    <span style="color: #2b25255c;">@Model.Dias[i,j]</span>
+                                </div>
+                            }
+                            else if ((i >= Model.Inicio_Fim[1] && j > Model.Inicio_Fim[2]) || i > Model.Inicio_Fim[1])
+                            {
+                                <div class="dia">
+                                    <span style="color: #2b25255c;">@Model.Dias[i,j]</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="dia">
+                                    <span>@Model.Dias[i,j]</span>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
