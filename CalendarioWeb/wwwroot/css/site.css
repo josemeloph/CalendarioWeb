@@ -18,6 +18,7 @@ body {
     }
 
 .container {
+    position: relative;
     display: flex;
     background-color: white;
     width: 46%;
@@ -87,6 +88,7 @@ body {
     font-family: Arial;
     display: flex;
     justify-content: space-between;
+    margin-bottom: 5px;
 }
 
     .dias-semana > div {
@@ -102,7 +104,6 @@ body {
 }
 
     .calendario .semana .dia {
-        border: solid 2px transparent;
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -110,9 +111,33 @@ body {
         height: 49px;
         width: 12%;
         font-size: 17px;
-        transition: 0.2s;
     }
 
         .calendario .semana .dia:hover {
-            border: solid 2px rgb(0 0 0 / 16%);
+            cursor: pointer;
         }
+
+.efeito {
+    border: solid 2px transparent;
+    transition: 0.2s;
+}
+.efeito:hover {
+    border: solid 2px rgb(0 0 0 / 16%);
+}
+
+.selecionado {
+    border: solid 2px rgb(0 0 0 / 16%);
+}
+
+
+.seta {
+    position: absolute;
+    top: 50%;
+    fill: #8f8686;
+    transition: 0.2s;
+}
+
+.seta:hover {
+    fill:black;
+    transform: scale(1.2);
+}

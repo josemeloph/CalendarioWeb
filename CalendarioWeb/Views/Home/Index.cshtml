@@ -1,18 +1,22 @@
 ﻿@model Calendario
-
+@{
+    DateTime data = Model.Data;
+    string mes = data.ToString("MMMM");
+    string mesCalendario = char.ToUpper(mes[0]) + mes.Substring(1);
+}
 <div>
     <div class="container">
         <div>
             <div class="top">
                 <div class="data">
                     <div>
-                        <span class="semana" style="display: block">sáb</span>
-                        <span class="dia">28</span>
+                        <span id="semana" class="semana">@data.ToString("ddd").</span>
+                        <span id="dia" class="dia">@data.Day</span>
                     </div>
                 </div>
                 <div>
-                    <span class="mes">Outubro 2023</span>
-                    <span class="ano">Dia do Servidor Público</span>
+                    <span class="mes">@mesCalendario @data.ToString("yyyy")</span>
+                    <span class="ano" style="display: none">Dia do Servidor Público</span>
                 </div>
             </div>
             <div class="dias-semana">
@@ -38,34 +42,104 @@
                     <span>Sáb</span>
                 </div>
             </div>
+
             <div class="calendario">
                 @for (int i = 0; i < 6; i++)
                 {
                     <div class="semana">
                         @for (int j = 0; j < 7; j++)
                         {
-                            if (i ==0 && j < Model.Inicio_Fim[0])
+                            if (Model.Dias[i, j].Month == data.Month)
                             {
-                                <div class="dia">
-                                    <span style="color: #2b25255c;">@Model.Dias[i,j]</span>
-                                </div>
+                                if (Model.Dias[i, j] != DateTime.Now.Date)
+                                {
+                                    <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" class="dia efeito">
+                                        <span>@Model.Dias[i,j].Day</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" id="atual" class="dia" style="border: solid 2px #2633ed70;">
+                                        <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
+                                    </div>
+                                }
                             }
-                            else if ((i >= Model.Inicio_Fim[1] && j > Model.Inicio_Fim[2]) || i > Model.Inicio_Fim[1])
+                            else if ((Model.Dias[i, j].Month < data.Month && data.Month != 12) || (Model.Dias[i, j].Month == 12 && data.Month == 1))
                             {
-                                <div class="dia">
-                                    <span style="color: #2b25255c;">@Model.Dias[i,j]</span>
-                                </div>
+                                @if (Model.Dias[i, j] != DateTime.Now.Date)
+                                {
+                                    <form asp-controller="Home" asp-action="MesAnterior" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito">
+                                        <span style="color: #2b25255c;">@Model.Dias[i,j].Day</span>
+                                        <input hidden name="data" value="@Model.Data" />
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Home" asp-action="MesAnterior" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito" style="border: solid 2px #2633ed70;">
+                                        <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
+                                        <input hidden name="data" value="@Model.Data" />
+                                    </form>
+                                }
                             }
                             else
                             {
-                                <div class="dia">
-                                    <span>@Model.Dias[i,j]</span>
-                                </div>
+                                @if (Model.Dias[i, j] != DateTime.Now.Date)
+                                {
+                                    <form asp-controller="Home" asp-action="ProximoMes" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito">
+                                        <span style="color: #2b25255c;">@Model.Dias[i,j].Day</span>
+                                        <input hidden name="data" value="@Model.Data" />
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Home" asp-action="ProximoMes" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito" style="border: solid 2px #2633ed70;">
+                                        <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
+                                        <input hidden name="data" value="@Model.Data" />
+                                    </form>
+                                }
+
                             }
                         }
                     </div>
                 }
             </div>
+            <form asp-action="ProximoMes" asp-controller="Home" onclick="enviarForm(this)" style="right: 3px" class="seta">
+                <input hidden name="data" value="@Model.Data" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M3.735 1.366l6.634 6.634-6.634 6.634c-.313.313-.313.819 0 1.131.313.313.819.313 1.131 0l7.2-7.2c.148-.148.234-.355.234-.565 0-.21-.086-.417-.234-.566l-7.2-7.2c-.313-.313-.819-.313-1.131 0s-.313.82 0 1.132z" />
+                    </svg>
+            </form>
+            <form asp-action="MesAnterior" asp-controller="Home" onclick="enviarForm(this)" style="left: 3px" class="seta">
+                <input hidden name="data" value="@Model.Data" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+
+                        <path d="M12.29.235c-.312-.313-.818-.313-1.131 0l-7.2 7.2c-.148.148-.234.355-.234.565 0 .21.086.417.234.566l7.2 7.2c.312.313.818.313 1.131 0 .313-.312.313-.818 0-1.131l-6.634-6.635 6.634-6.634c.313-.312.312-.819 0-1.131z" />
+                    </svg>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    function enviarForm(form) {
+        form.submit();
+    }
+
+    function selecionar(div) {
+        var divs = document.querySelectorAll('.dia');
+        divs.forEach(function (d) {
+            if (d.id !== "atual") {
+                d.classList.add('efeito');
+                d.classList.remove('selecionado');
+            }
+        });       
+        if (div.id !== "atual") {
+            div.classList.remove('efeito');
+            div.classList.add('selecionado');
+        }
+        var diaSemana = div.getAttribute("data-dia-semana");
+        var dia = div.getAttribute("data-dia");
+        document.querySelector('#semana').textContent = diaSemana + '.';
+        document.querySelector('#dia').textContent = dia;
+    }
+</script>
