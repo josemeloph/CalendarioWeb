@@ -38,8 +38,13 @@ body {
 .top {
     display: flex;
     margin-bottom: 25px;
-    align-items: center;
+    justify-content: space-between;
 }
+
+    .top > div {
+        display: flex;
+        align-items: center;
+    }
 
     .top .data {
         display: flex;
@@ -69,6 +74,22 @@ body {
             .top .data > div .dia {
                 font-size: 27px;
             }
+
+    .top .hoje {
+        font-family: Arial;
+        border-radius: 15px;
+        font-size: 14px;
+        padding: 4px 22px;
+        color: #0060ff;
+        border: solid 1px #0060ff;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+        .top .hoje:hover {
+            background: #bebcbc38;
+            cursor: pointer;
+        }
 
     .top .mes {
         font-size: 21px;
@@ -141,3 +162,4 @@ body {
     fill:black;
     transform: scale(1.2);
 }
+

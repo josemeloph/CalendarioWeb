@@ -25,7 +25,8 @@ namespace CalendarioWeb.Controllers
             return View(calendario);
         }
 
-        public IActionResult ProximoMes(DateTime data, int month)
+        [HttpPost]
+        public IActionResult ProximoMes(DateTime data, int dia)
         {
             int mes = data.Month;
             int ano = data.Year;
@@ -35,7 +36,8 @@ namespace CalendarioWeb.Controllers
                 ano ++;
             }
             else mes++;
-            data = new DateTime(ano, mes, data.Day);
+            int qteDias = DateTime.DaysInMonth(ano ,mes);
+            data = dia > qteDias ? new DateTime(ano, mes, qteDias) : new DateTime(ano, mes, dia);
             Calendario cal = new Calendario { Data = data };
             cal.GerarCalendario();
             ViewData["semana"] = cal.Data.ToString("ddd");
@@ -43,7 +45,8 @@ namespace CalendarioWeb.Controllers
             return View("Index", cal);
         }
 
-        public IActionResult MesAnterior(DateTime data, int month)
+        [HttpPost]
+        public IActionResult MesAnterior(DateTime data, int dia)
         {
             int mes = data.Month;
             int ano = data.Year;
@@ -53,7 +56,8 @@ namespace CalendarioWeb.Controllers
                 ano--;
             }
             else mes--;
-            data = new DateTime(ano, mes, data.Day);
+            int qteDias = DateTime.DaysInMonth(ano, mes);
+            data = dia > qteDias ? new DateTime(ano, mes, qteDias) : new DateTime(ano, mes, dia);
             Calendario cal = new Calendario { Data = data };
             cal.GerarCalendario();
             return View("Index", cal);

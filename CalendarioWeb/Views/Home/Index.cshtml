@@ -8,15 +8,22 @@
     <div class="container">
         <div>
             <div class="top">
-                <div class="data">
+                <div>
+                    <div class="data">
+                        <div>
+                            <span id="semana" class="semana">@data.ToString("ddd").</span>
+                            <span id="dia" class="dia">@data.Day</span>
+                        </div>
+                    </div>
                     <div>
-                        <span id="semana" class="semana">@data.ToString("ddd").</span>
-                        <span id="dia" class="dia">@data.Day</span>
+                        <span class="mes">@mesCalendario @data.ToString("yyyy")</span>
+                        <span class="ano" style="display: none">Dia do Servidor Público</span>
                     </div>
                 </div>
                 <div>
-                    <span class="mes">@mesCalendario @data.ToString("yyyy")</span>
-                    <span class="ano" style="display: none">Dia do Servidor Público</span>
+                    <a asp-action="Index" asp-controller="Home" class="hoje">
+                        <span>Hoje</span>
+                    </a>
                 </div>
             </div>
             <div class="dias-semana">
@@ -51,26 +58,34 @@
                         {
                             if (Model.Dias[i, j].Month == data.Month)
                             {
-                                if (Model.Dias[i, j] != DateTime.Now.Date)
-                                {
-                                    <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" class="dia efeito">
-                                        <span>@Model.Dias[i,j].Day</span>
-                                    </div>
-                                }
-                                else
+                                if (Model.Dias[i, j] == DateTime.Now.Date)
                                 {
                                     <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" id="atual" class="dia" style="border: solid 2px #2633ed70;">
                                         <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
                                     </div>
                                 }
+                                else if (Model.Dias[i, j].Day == Model.Data.Day)
+                                {
+                                    <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" class="dia selecionado">
+                                        <span>@Model.Dias[i,j].Day</span>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this)" class="dia efeito">
+                                        <span>@Model.Dias[i,j].Day</span>
+                                    </div>
+                                }
                             }
-                            else if ((Model.Dias[i, j].Month < data.Month && data.Month != 12) || (Model.Dias[i, j].Month == 12 && data.Month == 1))
+                            else if ((Model.Dias[i, j].Month < data.Month && Model.Dias[i, j].Year == data.Year) || (Model.Dias[i, j].Month == 12 && data.Month == 1))
                             {
                                 @if (Model.Dias[i, j] != DateTime.Now.Date)
                                 {
                                     <form asp-controller="Home" asp-action="MesAnterior" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito">
                                         <span style="color: #2b25255c;">@Model.Dias[i,j].Day</span>
                                         <input hidden name="data" value="@Model.Data" />
+                                        <input hidden name="dia" value="@Model.Dias[i, j].Day" />
                                     </form>
                                 }
                                 else
@@ -78,6 +93,7 @@
                                     <form asp-controller="Home" asp-action="MesAnterior" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito" style="border: solid 2px #2633ed70;">
                                         <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
                                         <input hidden name="data" value="@Model.Data" />
+                                        <input hidden name="dia" value="@Model.Dias[i, j].Day" />
                                     </form>
                                 }
                             }
@@ -88,6 +104,7 @@
                                     <form asp-controller="Home" asp-action="ProximoMes" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito">
                                         <span style="color: #2b25255c;">@Model.Dias[i,j].Day</span>
                                         <input hidden name="data" value="@Model.Data" />
+                                        <input hidden name="dia" value="@Model.Dias[i, j].Day" />
                                     </form>
                                 }
                                 else
@@ -95,6 +112,7 @@
                                     <form asp-controller="Home" asp-action="ProximoMes" data-dia-semana="@Model.Dias[i, j].ToString("ddd")" data-dia="@Model.Dias[i,j].Day.ToString()" onclick="selecionar(this), enviarForm(this)" class="dia efeito" style="border: solid 2px #2633ed70;">
                                         <span style="color: #215bea;">@Model.Dias[i,j].Day</span>
                                         <input hidden name="data" value="@Model.Data" />
+                                        <input hidden name="dia" value="@Model.Dias[i, j].Day" />
                                     </form>
                                 }
 
@@ -105,25 +123,31 @@
             </div>
             <form asp-action="ProximoMes" asp-controller="Home" onclick="enviarForm(this)" style="right: 3px" class="seta">
                 <input hidden name="data" value="@Model.Data" />
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path d="M3.735 1.366l6.634 6.634-6.634 6.634c-.313.313-.313.819 0 1.131.313.313.819.313 1.131 0l7.2-7.2c.148-.148.234-.355.234-.565 0-.21-.086-.417-.234-.566l-7.2-7.2c-.313-.313-.819-.313-1.131 0s-.313.82 0 1.132z" />
-                    </svg>
+                <input class="form" hidden name="dia" value="@Model.Data.Day" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M3.735 1.366l6.634 6.634-6.634 6.634c-.313.313-.313.819 0 1.131.313.313.819.313 1.131 0l7.2-7.2c.148-.148.234-.355.234-.565 0-.21-.086-.417-.234-.566l-7.2-7.2c-.313-.313-.819-.313-1.131 0s-.313.82 0 1.132z" />
+                </svg>
             </form>
             <form asp-action="MesAnterior" asp-controller="Home" onclick="enviarForm(this)" style="left: 3px" class="seta">
                 <input hidden name="data" value="@Model.Data" />
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <input class="form" hidden name="dia" value="@Model.Data.Day" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 
-                        <path d="M12.29.235c-.312-.313-.818-.313-1.131 0l-7.2 7.2c-.148.148-.234.355-.234.565 0 .21.086.417.234.566l7.2 7.2c.312.313.818.313 1.131 0 .313-.312.313-.818 0-1.131l-6.634-6.635 6.634-6.634c.313-.312.312-.819 0-1.131z" />
-                    </svg>
+                    <path d="M12.29.235c-.312-.313-.818-.313-1.131 0l-7.2 7.2c-.148.148-.234.355-.234.565 0 .21.086.417.234.566l7.2 7.2c.312.313.818.313 1.131 0 .313-.312.313-.818 0-1.131l-6.634-6.635 6.634-6.634c.313-.312.312-.819 0-1.131z" />
+                </svg>
             </form>
         </div>
     </div>
 </div>
 
 <script>
+    document.querySelectorAll('.form').forEach(function (i) {
+        i.value = document.getElementById('atual').getAttribute("data-dia");
+    })
     function enviarForm(form) {
         form.submit();
     }
+
 
     function selecionar(div) {
         var divs = document.querySelectorAll('.dia');
@@ -132,13 +156,16 @@
                 d.classList.add('efeito');
                 d.classList.remove('selecionado');
             }
-        });       
+        });
         if (div.id !== "atual") {
             div.classList.remove('efeito');
             div.classList.add('selecionado');
         }
         var diaSemana = div.getAttribute("data-dia-semana");
         var dia = div.getAttribute("data-dia");
+        document.querySelectorAll('.form').forEach(function (i) {
+            i.value = dia;
+        })
         document.querySelector('#semana').textContent = diaSemana + '.';
         document.querySelector('#dia').textContent = dia;
     }

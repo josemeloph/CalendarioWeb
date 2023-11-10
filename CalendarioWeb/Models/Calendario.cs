@@ -18,8 +18,12 @@ namespace CalendarioWeb.Models
             int primeiroDiaMes = (int)new DateTime(ano, mes, 1).DayOfWeek;
             for (int d = 0; d < 7; d++)
             {
-                if (d < primeiroDiaMes) Dias[0, d] = new DateTime(data.Year, data.Month == 1 ? 12 : data.Month - 1, qteDiasMesAnterior - primeiroDiaMes + d + 1);
-                else Dias[0, d] = new DateTime(data.Year, data.Month, d - primeiroDiaMes + 1);
+                if (d < primeiroDiaMes)
+                {
+                    if(mes == 1) Dias[0, d] = new DateTime(ano - 1, 12, qteDiasMesAnterior - primeiroDiaMes + d + 1);
+                    else Dias[0, d] = new DateTime(ano, mes - 1, qteDiasMesAnterior - primeiroDiaMes + d + 1);
+                }
+                else Dias[0, d] = new DateTime(ano, mes, d - primeiroDiaMes + 1);
             }
             int dia = Dias[0, 6].Day + 1;
             int diaMesSeguinte = 0;
@@ -35,7 +39,8 @@ namespace CalendarioWeb.Models
                     else
                     {
                         diaMesSeguinte++;
-                        Dias[i, j] = new DateTime(ano, mes == 12 ? 1 : mes + 1, diaMesSeguinte);
+                        if (mes == 12) Dias[i, j] = new DateTime(ano + 1, 1, diaMesSeguinte);
+                        else Dias[i, j] = new DateTime(ano, mes + 1, diaMesSeguinte);
                     }
                 }
             }
